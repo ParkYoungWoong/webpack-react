@@ -2,11 +2,11 @@ const deepFreeze = require('deep-freeze-strict');
 const { cloneDeep } = require('lodash');
 const { createLoadStyleConf } = require('../../LoadersCreator');
 
-// base config for vue
+// base config for React
 const baseLoaderRules = deepFreeze({
     jsx: {
         test: /\.[jt]sx?$/i,
-        exclude: /node_modules/, // 제외할 경로
+        exclude: /node_modules/,
         use: [
             {
                 loader: 'babel-loader',
@@ -26,7 +26,6 @@ const baseLoaderRules = deepFreeze({
                 options: {
                     transpileOnly: true,
                     happyPackMode: false,
-                    appendTsxSuffixTo: ['\\.vue$'],
                 },
             },
         ],

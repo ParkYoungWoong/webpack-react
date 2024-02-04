@@ -2,7 +2,7 @@ const deepFreeze = require('deep-freeze-strict');
 const { cloneDeep } = require('lodash');
 const { loader: miniLoader } = require('mini-css-extract-plugin');
 
-/** @description basic css loader conf for Vue.js */
+/** @description basic css loader conf for React */
 const cssLoaderConf = deepFreeze({
     test: /\.css$/i,
     oneOf: [
@@ -163,10 +163,7 @@ const createLoadStyleConf = (confs = {}) => {
         });
     }
 
-    /**
-     * Configure mini-css-extract-plugin.
-     * See: https://vue-loader.vuejs.org/guide/extract-css.html
-     */
+    // Configuration for mini-css-extract-plugin
     if (isProd) {
         const { oneOf: oldOneOf } = returnConf;
 

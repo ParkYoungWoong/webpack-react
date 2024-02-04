@@ -1,6 +1,6 @@
-/** @description add config here */
-const globalConf = {
-    extensions: Object.freeze(['.cjs', '.mjs', '.js', '.cts', '.mts', '.ts', '.jsx', '.tsx', '.vue', '.json']),
-};
+const deepFreeze = require('deep-freeze-strict');
 
-module.exports = globalConf;
+/** @description add config here */
+module.exports = deepFreeze({
+    extensions: ['.cjs', '.mjs', '.js', '.cts', '.mts', '.ts', '.jsx', '.tsx', '.json'],
+});
