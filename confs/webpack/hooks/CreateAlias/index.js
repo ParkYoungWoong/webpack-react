@@ -5,9 +5,9 @@ const baseConfig = Object.freeze({
 });
 
 /**
- * create entry config
- * @param {Record<string, unknown>} yourConfig add your config of entry
- * @returns an entry config
+ * create alias config
+ * @param {Record<string, unknown>} yourConfig add your config of alias
+ * @returns an alias config
  */
 const createAlias = (yourConfig = {}) => Object.assign(Object.create(null), baseConfig, yourConfig);
 
