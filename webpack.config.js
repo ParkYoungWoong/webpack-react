@@ -24,26 +24,15 @@ const configLoaders = (env, argv) => {
     // configure production loader options
     if (prod && mode === 'production') {
         // use mini-css-extract-plugin loader
-        const basicExtractConf = {
-            styleType: 'css',
-            isProd: true,
-        };
-
-        configOneLoader('css', createLoadStyleConf(basicExtractConf));
-        configOneLoader(
-            'scss',
-            createLoadStyleConf({
-                ...basicExtractConf,
-                styleType: 'scss',
-            })
-        );
-        configOneLoader(
-            'sass',
-            createLoadStyleConf({
-                ...basicExtractConf,
-                styleType: 'sass',
-            })
-        );
+        ['css', 'scss', 'sass'].forEach(styleType => {
+            configOneLoader(
+                styleType,
+                createLoadStyleConf({
+                    styleType,
+                    isProd: true,
+                })
+            );
+        });
     }
 
     return getConfigOfLoaders();
