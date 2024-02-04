@@ -1,3 +1,5 @@
+@use './assets/global-conf';
+
 .App {
-    color: $element-blue;
+    color: global-conf.$element-blue;
 }

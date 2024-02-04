@@ -22,16 +22,6 @@ const configLoaders = (env, argv) => {
 
     const { configOneLoader, getConfigOfLoaders } = createLoaders();
 
-    // configure style-resource-loader
-    const styleResourcePatterns = [pathResolve(__dirname, 'src/assets/_global-conf.scss')];
-    configOneLoader(
-        'scss',
-        createLoadStyleConf({
-            styleType: 'scss',
-            styleResourcePatterns,
-        })
-    );
-
     // configure production loader options
     if (prod && mode === 'production') {
         // use mini-css-extract-plugin loader
@@ -46,7 +36,6 @@ const configLoaders = (env, argv) => {
             createLoadStyleConf({
                 ...basicExtractConf,
                 styleType: 'scss',
-                styleResourcePatterns,
             })
         );
         configOneLoader(
