@@ -66,14 +66,14 @@ const createLoaders = (yourConfig = {}) => {
     /** @description use this function to get the configuration of the loader given name */
     const getOneLoaderConfig = loaderName => {
         if (getAllLoadersByName().includes(loaderName)) {
-            return Object.freeze(Object.assign(Object.create(null), res[loaderName]));
+            return deepFreeze(Object.assign(Object.create(null), res[loaderName]));
         }
 
         return null;
     };
 
     /** @description get all loaders having been added by key-value */
-    const getAllLoaderConfig = () => Object.freeze(Object.assign(Object.create(null), res));
+    const getAllLoaderConfig = () => deepFreeze(Object.assign(Object.create(null), res));
 
     /** @description use this function to config a loader or add a loader */
     const configOneLoader = (key, opt) => {
