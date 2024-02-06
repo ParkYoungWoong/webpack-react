@@ -82,7 +82,6 @@ const createLoaders = (yourConfig = {}) => {
         });
     };
 
-    /** @description get the result of loader config */
     /**
      * @description Get the result of loader config
      * @param {'styl' | 'stylus'} uniqueStylus If you config 'styl' and 'stylus' at the same time, you should give the one you want to preserve. The default value is 'styl'.
