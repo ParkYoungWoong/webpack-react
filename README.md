@@ -1,33 +1,31 @@
-# Webpack React Init
+# Webpack React New
 
-Really basic template with `React 18 + TypeScript + Webpack 5`. You can this repository as your project template.
+This is a basic template with `React 18 + TypeScript + Webpack 5`. You can use this repository as your project template.
 
 ## Installation
 
-Notice:
+Please note:
 
-* The version of node must be `>= 14`.
-* If you use `pnpm`, make sure your node's version is `>= 16`.
+* The Node.js version must be `>= 14`.
+* It's recommended to use the LTS version.
 
 ```sh
-# Copy this template
-$ npx degit https://github.com/Allen-Bayern/webpack-react-new.git YOUR_DIRECTORY_NAME
+# Clone this template
+$ npx degit https://github.com/Allen-Bayern/webpack-react-new.git YOUR_PROJECT_DIRECTORY
 
-# Start to develop
-$ cd YOUR_DIRECTORY_NAME
+# Navigate to your project directory
+$ cd YOUR_PROJECT_DIRECTORY
 $ rm -rf package-lock.json
 
-# if you use npm
-$ npm i
+# If you're using npm
+$ npm install
 $ npm run dev
 
-# if you use yarn
-$ yarn
+# If you're using yarn
+$ yarn install
 $ yarn dev
 
-# or, if you use pnpm
-$ pnpm i
-# The below line is very important!
-$ pnpm up
+# Or, if you're using pnpm, the following line is crucial!
+$ pnpm update
 $ pnpm run dev
 ```
