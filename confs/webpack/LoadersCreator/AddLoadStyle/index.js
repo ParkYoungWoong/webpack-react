@@ -2,6 +2,33 @@ const deepFreeze = require('deep-freeze-strict');
 const { cloneDeep } = require('lodash');
 const { loader: miniLoader } = require('mini-css-extract-plugin');
 
+// simplify codes
+const oneOfUse = [
+    /* config.module.rule('css').oneOf('xxx').use('style-loader') */
+    {
+        loader: 'style-loader',
+    },
+    /* config.module.rule('css').oneOf('xxx').use('css-loader') */
+    {
+        loader: 'css-loader',
+        options: {
+            sourceMap: false,
+            importLoaders: 2,
+            // css-module hash
+            modules: {
+                localIdentName: '[local]__[hash:base64]',
+            },
+        },
+    },
+    /* config.module.rule('css').oneOf('xxx').use('postcss-loader') */
+    {
+        loader: 'postcss-loader',
+        options: {
+            sourceMap: false,
+        },
+    },
+];
+
 /** @description basic css loader conf for React */
 const cssLoaderConf = deepFreeze({
     test: /\.css$/i,
@@ -9,58 +36,18 @@ const cssLoaderConf = deepFreeze({
         /* config.module.rule('css').oneOf('normal-modules') */
         {
             test: /\.module\.\w+$/,
-            use: [
-                /* config.module.rule('css').oneOf('normal-modules').use('style-loader') */
-                {
-                    loader: 'style-loader',
-                },
-                /* config.module.rule('css').oneOf('normal-modules').use('css-loader') */
-                {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: false,
-                        importLoaders: 2,
-                    },
-                },
-                /* config.module.rule('css').oneOf('normal-modules').use('postcss-loader') */
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        sourceMap: false,
-                    },
-                },
-            ],
+            use: [...oneOfUse],
         },
         /* config.module.rule('css').oneOf('normal') */
         {
-            use: [
-                /* config.module.rule('css').oneOf('normal').use('style-loader') */
-                {
-                    loader: 'style-loader',
-                },
-                /* config.module.rule('css').oneOf('normal').use('css-loader') */
-                {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: false,
-                        importLoaders: 2,
-                    },
-                },
-                /* config.module.rule('css').oneOf('normal').use('postcss-loader') */
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        sourceMap: false,
-                    },
-                },
-            ],
+            use: [...oneOfUse],
         },
     ],
 });
 
 /**
  * @description Get css / scss / sass / less / stylus load config. You can extend this function
- * @param {Record<string, unknown>} confs styleType, styleResourcePatterns, isProd
+ * @param {Record<string, unknown>} confs styleType, styleResourcePatterns, isUseMiniCssExtract
  * @returns
  */
 const createLoadStyleConf = (confs = {}) => {
@@ -68,7 +55,7 @@ const createLoadStyleConf = (confs = {}) => {
         styleType = 'css',
         styleResourcePatterns = [],
         // to use mini css extract plugin at production mode
-        isProd = false,
+        isUseMiniCssExtract = false,
     } = confs;
 
     // return value
@@ -164,7 +151,7 @@ const createLoadStyleConf = (confs = {}) => {
     }
 
     // Configuration for mini-css-extract-plugin
-    if (isProd) {
+    if (isUseMiniCssExtract) {
         const { oneOf: oldOneOf } = returnConf;
 
         returnConf = Object.assign(returnConf, {
