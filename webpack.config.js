@@ -50,8 +50,8 @@ const configPlugins = (env, argv) => {
     configPlugin(
         'definePlugin',
         createDefinePlugin({
-            isDev: !!dev,
-            isUseMiniCssExtract: !!prod,
+            isDev: Boolean(dev),
+            isProd: Boolean(prod && mode === 'production'),
         })
     );
 
