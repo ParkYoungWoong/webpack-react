@@ -20,6 +20,10 @@ const cssLoaderConf = deepFreeze({
                     options: {
                         sourceMap: false,
                         importLoaders: 2,
+                        // css-module hash
+                        modules: {
+                            localIdentName: '[local]__[hash:base64]',
+                        },
                     },
                 },
                 /* config.module.rule('css').oneOf('normal-modules').use('postcss-loader') */
@@ -44,6 +48,10 @@ const cssLoaderConf = deepFreeze({
                     options: {
                         sourceMap: false,
                         importLoaders: 2,
+                        // css-module hash
+                        modules: {
+                            localIdentName: '[local]__[hash:base64]',
+                        },
                     },
                 },
                 /* config.module.rule('css').oneOf('normal').use('postcss-loader') */

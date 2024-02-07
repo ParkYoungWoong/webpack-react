@@ -1,5 +1,5 @@
-@use './assets/global-conf';
+@use './assets/global-conf' as globalConf;
 
 .App {
-    color: global-conf.$element-blue;
+    color: globalConf.$element-blue;
 }
