@@ -68,7 +68,7 @@ const cssLoaderConf = deepFreeze({
 
 /**
  * @description Get css / scss / sass / less / stylus load config. You can extend this function
- * @param {Record<string, unknown>} confs styleType, styleResourcePatterns, isProd
+ * @param {Record<string, unknown>} confs styleType, styleResourcePatterns, isUseMiniCssExtract
  * @returns
  */
 const createLoadStyleConf = (confs = {}) => {
@@ -76,7 +76,7 @@ const createLoadStyleConf = (confs = {}) => {
         styleType = 'css',
         styleResourcePatterns = [],
         // to use mini css extract plugin at production mode
-        isProd = false,
+        isUseMiniCssExtract = false,
     } = confs;
 
     // return value
@@ -172,7 +172,7 @@ const createLoadStyleConf = (confs = {}) => {
     }
 
     // Configuration for mini-css-extract-plugin
-    if (isProd) {
+    if (isUseMiniCssExtract) {
         const { oneOf: oldOneOf } = returnConf;
 
         returnConf = Object.assign(returnConf, {

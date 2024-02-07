@@ -31,7 +31,7 @@ const configLoaders = (env, argv) => {
                 styleType,
                 createLoadStyleConf({
                     styleType,
-                    isProd: true,
+                    isUseMiniCssExtract: true,
                 })
             );
         });
@@ -52,7 +52,7 @@ const configPlugins = (env, argv) => {
         'definePlugin',
         createDefinePlugin({
             isDev: !!dev,
-            isProd: !!prod,
+            isUseMiniCssExtract: !!prod,
         })
     );
 
