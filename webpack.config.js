@@ -1,6 +1,8 @@
+const { resolve: pathResolve } = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const { cloneDeep } = require('lodash');
 const { webpackBaseConfig: baseConfig, webpackHooks, webpackCreator } = require('./confs');
+const { extensions } = require('./confs/webpack/GlobalConf');
 const { loadersCreator, pluginsCreator } = webpackCreator;
 const { createLoadStyleConf } = loadersCreator;
 const {
@@ -12,7 +14,7 @@ const {
     createCssExtractPlugin,
     createCleanPlugin,
 } = pluginsCreator;
-const { createLoaders, createPlugins } = webpackHooks;
+const { createAlias, createLoaders, createPlugins } = webpackHooks;
 
 // loader config function
 const configLoaders = (env, argv) => {
@@ -101,12 +103,23 @@ module.exports = (env, argv) => {
     const { dev, prod } = env || {};
     const { mode } = argv || {};
 
-    let conf = Object.assign(cloneDeep(baseConfig), {
-        module: {
-            rules: configLoaders(env, argv),
+    let conf = Object.assign(
+        cloneDeep(baseConfig),
+        {
+            resolve: {
+                extensions,
+                alias: createAlias({
+                    '#': pathResolve(__dirname, 'types'),
+                }),
+            },
         },
-        plugins: configPlugins(env, argv),
-    });
+        {
+            module: {
+                rules: configLoaders(env, argv),
+            },
+            plugins: configPlugins(env, argv),
+        }
+    );
 
     if (dev) {
         conf = Object.assign(conf, {
