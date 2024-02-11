@@ -1,5 +1,6 @@
 const HtmlPlugin = require('html-webpack-plugin');
 const { resolve } = require('path');
+const { cloneDeep } = require('lodash');
 const deepFreeze = require('deep-freeze-strict');
 
 // default configuration
@@ -14,7 +15,11 @@ const defaultConf = deepFreeze({
 });
 
 // use html-webpack-plugin
-const createHtmlPlugin = (conf = defaultConf) => new HtmlPlugin(conf);
+const createHtmlPlugin = (conf = {}) =>
+    new HtmlPlugin({
+        ...cloneDeep(defaultConf),
+        ...conf,
+    });
 
 module.exports = {
     createHtmlPlugin,
