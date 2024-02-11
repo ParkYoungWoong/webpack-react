@@ -11,8 +11,12 @@ const defaultConf = deepFreeze({
     },
 });
 
-// use eslint-webpack-plugin
-const createForkTsCheckerPlugin = (conf = defaultConf) => new ForkTsCheckerWebpackPlugin(conf);
+// use fork-ts-checker-webpack-plugin
+const createForkTsCheckerPlugin = (conf = {}) =>
+    new ForkTsCheckerWebpackPlugin({
+        ...defaultConf,
+        ...conf,
+    });
 
 module.exports = {
     createForkTsCheckerPlugin,

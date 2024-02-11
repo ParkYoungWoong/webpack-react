@@ -7,7 +7,11 @@ const defaultConf = deepFreeze({
 });
 
 // use mini-css-extract-plugin
-const createPlugin = (conf = defaultConf) => new MiniCssExtractPlugin(conf);
+const createPlugin = (conf = {}) =>
+    new MiniCssExtractPlugin({
+        ...defaultConf,
+        ...conf,
+    });
 
 module.exports = {
     createPlugin,

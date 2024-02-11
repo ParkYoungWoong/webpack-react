@@ -2,32 +2,40 @@ const deepFreeze = require('deep-freeze-strict');
 const { cloneDeep } = require('lodash');
 const { loader: miniLoader } = require('mini-css-extract-plugin');
 
-// simplify codes
-const oneOfUse = [
-    /* config.module.rule('css').oneOf('xxx').use('style-loader') */
-    {
-        loader: 'style-loader',
-    },
-    /* config.module.rule('css').oneOf('xxx').use('css-loader') */
-    {
-        loader: 'css-loader',
-        options: {
-            sourceMap: false,
-            importLoaders: 2,
-            // css-module hash
-            modules: {
-                localIdentName: '[local]__[hash:base64]',
+// generate oneOf options
+const oneOfUse = (useCssModule = true, isCssPre = false) => {
+    // decide css module options
+    let cssModulesOpt = false;
+    if (useCssModule) {
+        cssModulesOpt = {
+            localIdentName: '[local]__[hash:base64]',
+        };
+    }
+
+    return [
+        /* config.module.rule('css').oneOf('xxx').use('style-loader') */
+        {
+            loader: 'style-loader',
+        },
+        /* config.module.rule('css').oneOf('xxx').use('css-loader') */
+        {
+            loader: 'css-loader',
+            options: {
+                sourceMap: false,
+                importLoaders: Number(isCssPre) + 1,
+                // css-module hash
+                modules: cssModulesOpt,
             },
         },
-    },
-    /* config.module.rule('css').oneOf('xxx').use('postcss-loader') */
-    {
-        loader: 'postcss-loader',
-        options: {
-            sourceMap: false,
+        /* config.module.rule('css').oneOf('xxx').use('postcss-loader') */
+        {
+            loader: 'postcss-loader',
+            options: {
+                sourceMap: false,
+            },
         },
-    },
-];
+    ];
+};
 
 /** @description basic css loader conf for React */
 const cssLoaderConf = deepFreeze({
@@ -36,11 +44,11 @@ const cssLoaderConf = deepFreeze({
         /* config.module.rule('css').oneOf('normal-modules') */
         {
             test: /\.module\.\w+$/,
-            use: [...oneOfUse],
+            use: oneOfUse(),
         },
         /* config.module.rule('css').oneOf('normal') */
         {
-            use: [...oneOfUse],
+            use: oneOfUse(false),
         },
     ],
 });
@@ -63,8 +71,6 @@ const createLoadStyleConf = (confs = {}) => {
 
     // css pre-processors config
     if (['scss', 'sass', 'less', 'styl', 'stylus'].includes(styleType)) {
-        const { oneOf: oldOneOf } = cloneDeep(cssLoaderConf);
-
         // get regular expression for test
         const getTestRegex = () => {
             if (['scss', 'sass'].includes(styleType)) {
@@ -116,13 +122,17 @@ const createLoadStyleConf = (confs = {}) => {
 
         returnConf = Object.assign(returnConf, {
             test: getTestRegex(),
-            oneOf: oldOneOf.map(item => {
-                const { use: oldUse } = item;
-                return {
-                    ...item,
-                    use: [...oldUse, getLoaderOptions()],
-                };
-            }),
+            oneOf: [
+                /* config.module.rule('xxx').oneOf('normal-modules') */
+                {
+                    test: /\.module\.\w+$/,
+                    use: [...oneOfUse(true, true), getLoaderOptions()],
+                },
+                /* config.module.rule('xxx').oneOf('normal') */
+                {
+                    use: [...oneOfUse(false, true), getLoaderOptions()],
+                },
+            ],
         });
     }
 
