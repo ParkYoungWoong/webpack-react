@@ -7,7 +7,6 @@ const { createLoadStyleConf } = loadersCreator;
 const {
     createEslintPlugin,
     createHtmlPlugin,
-    htmlPluginDefaultConf,
     createForkTsCheckerPlugin,
     createDefinePlugin,
     createCssExtractPlugin,
@@ -56,12 +55,12 @@ const configPlugins = env => {
     );
 
     // self-defined HtmlWebpackPlugin configuration
-    const htmlPluginSelfConfiguration = Object.assign(cloneDeep(htmlPluginDefaultConf), {
+    const htmlPluginSelfConfiguration = {
         templateParameters: {
             lang: 'zh-cn',
         },
         title: 'React + TypeScript Webpack Project',
-    });
+    };
     // reset HtmlWebpackPlugin configuration
     configPlugin('htmlPlugin', createHtmlPlugin(htmlPluginSelfConfiguration));
 
