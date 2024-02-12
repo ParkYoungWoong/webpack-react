@@ -120,6 +120,7 @@ module.exports = env => {
     if (dev) {
         conf = Object.assign(conf, {
             devtool: 'source-map',
+            mode: 'development',
         });
     }
 
@@ -128,6 +129,7 @@ module.exports = env => {
             conf,
             {
                 devtool: 'nosources-source-map',
+                mode: 'production',
             },
             {
                 optimization: {
