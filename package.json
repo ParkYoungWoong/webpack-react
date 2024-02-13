@@ -5,7 +5,7 @@
   "main": "main.tsx",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve --env=dev",
-    "build": "cross-env NODE_ENV=production webpack --env=prod",
+    "build": "rm -rf ./dist && cross-env NODE_ENV=production webpack --env=prod",
     "lint": "npx eslint ./src --fix"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.0.0",
+    "css-minimizer-webpack-plugin": "^5.0.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.2.1",

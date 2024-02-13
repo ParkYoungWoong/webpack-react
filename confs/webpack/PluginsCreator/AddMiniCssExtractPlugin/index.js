@@ -3,7 +3,7 @@ const deepFreeze = require('deep-freeze-strict');
 
 // default configuration
 const defaultConf = deepFreeze({
-    filename: '[name]-[contenthash].css',
+    filename: 'css/[name]-[contenthash].css',
 });
 
 // use mini-css-extract-plugin
