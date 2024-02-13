@@ -10,8 +10,11 @@ const webpackBaseConfig = deepFreeze({
         alias: createAlias(),
     },
     output: {
+        hashFunction: 'xxhash64',
         path: pathResolve(__dirname, '../../dist'),
-        filename: '[name].[contenthash].bundle.js',
+        publicPath: pathResolve(__dirname, '../..'),
+        filename: 'js/[name].[contenthash].bundle.js',
+        chunkFilename: 'js/[name].[contenthash].js',
         clean: true,
     },
     module: {

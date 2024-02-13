@@ -1,5 +1,6 @@
 const { resolve: pathResolve } = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { cloneDeep } = require('lodash');
 const { webpackBaseConfig: baseConfig, webpackHooks, webpackCreator } = require('./confs');
 const { loadersCreator, pluginsCreator } = webpackCreator;
@@ -167,6 +168,7 @@ module.exports = env => {
                                 },
                             },
                         }),
+                        new CssMinimizerPlugin(),
                     ],
                 },
             }
