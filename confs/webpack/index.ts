@@ -1,7 +1,7 @@
 import { resolve as pathResolve } from 'path';
 import Config from 'webpack-chain';
 import compose from 'compose-function';
-import { loadStyles } from './modules/LoadStyles';
+import { loadStyles, loadJs } from './modules';
 
 // plugins
 import { DefinePlugin } from 'webpack';
@@ -44,8 +44,13 @@ const { uglifyJsMinify } = TerserPlugin;
 export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
     const { title = 'react-ts-webpack-starter', lang = 'en', isDev = true, isProd = false } = options || {};
 
-    // configuration of loading styles
-    const configLoadStyle = compose(
+    // configuration of loading js styles
+    const configLoadingJsAndStyles = compose(
+        (conf: Config) =>
+            loadJs(conf, {
+                isProd,
+            }),
+
         (conf: Config) =>
             loadStyles(conf, {
                 isDev,
@@ -65,7 +70,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             })
     );
 
-    return configLoadStyle(
+    return configLoadingJsAndStyles(
         new Config()
             // set context
             .context(withBasePath())
@@ -94,17 +99,8 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             .add('.mjs')
             .end()
             .end()
-            .module.rule('js')
-            .test(/\.[jt]sx?$/i)
-            .use('babel')
-            .loader('babel-loader')
-            .options({ babelrc: true })
-            .end()
-            .exclude.add(/node_modules/)
-            .end()
-            .end()
+            .module.rule('pics')
             // add pics
-            .rule('pics')
             .test(/\.(png|svg|jpe?g|gif)$/i)
             .set('type', 'asset/resource')
             .parser({
@@ -146,6 +142,14 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                 minSize: 15000,
             })
             .end()
+            // check ts in dev environment
+            .plugin('ForkTsCheckerWebpackPlugin')
+            .use(ForkTsCheckerWebpackPlugin, [
+                {
+                    devServer: false,
+                },
+            ])
+            .end()
             // set in development mode
             .when(isDev, configure => {
                 configure
@@ -157,20 +161,21 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     .hot(true)
                     .open(false)
                     .end()
-                    // check ts in dev environment
-                    .plugin('ForkTsCheckerWebpackPlugin')
-                    .use(ForkTsCheckerWebpackPlugin, [
-                        {
-                            devServer: true,
-                        },
-                    ])
-                    .end()
                     .plugin('ESLintPlugin')
                     .use(ESLintPlugin, [
                         {
                             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs', '.cjs'],
                             fix: true,
                             threads: true,
+                        },
+                    ])
+                    .end()
+                    // check ts in dev environment
+                    .plugin('ForkTsCheckerWebpackPlugin')
+                    .tap(args => [
+                        ...args,
+                        {
+                            devServer: true,
                         },
                     ])
                     .end();
@@ -231,6 +236,21 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     .use(MiniCssExtractPlugin, [
                         {
                             filename: 'style/[name]-[contenthash].css',
+                        },
+                    ])
+                    .end()
+                    // check ts in dev environment
+                    .plugin('ForkTsCheckerWebpackPlugin')
+                    .tap(args => [
+                        ...args,
+                        {
+                            devServer: false,
+                            typescript: {
+                                diagnosticOptions: {
+                                    semantic: true,
+                                    syntactic: true,
+                                },
+                            },
                         },
                     ])
                     .end();
