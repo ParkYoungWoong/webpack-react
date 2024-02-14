@@ -14,6 +14,10 @@ interface OtherConf {
  */
 const genAutoFunc = (suffix = 'scss') => {
     function cb(rp: string) {
+        if (['styl', 'stylus'].includes(suffix)) {
+            return rp.endsWith('.styl') || rp.endsWith('.stylus');
+        }
+
         return rp.endsWith(`.${suffix}`);
     }
 
@@ -262,7 +266,7 @@ export const loadStyles = (
                 importLoaders: 2,
                 // css-module hash
                 modules: {
-                    auto: genAutoFunc('styl') || genAutoFunc('stylus'),
+                    auto: genAutoFunc('styl'),
                     localIdentName: '[local]__[hash:base64]',
                 },
             })
