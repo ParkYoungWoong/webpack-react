@@ -1,0 +1,1 @@
+export { createBasicConfig } from './webpack';
