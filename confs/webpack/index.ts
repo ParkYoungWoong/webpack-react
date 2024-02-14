@@ -83,6 +83,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             .end()
             // set alias
             .resolve.alias.set('@', withBasePath('src'))
+            .set('#', withBasePath('types'))
             .end()
             .extensions.add('.js')
             .add('.jsx')
