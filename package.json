@@ -17,7 +17,6 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@types/compose-function": "^0.0.33",
-    "@types/deep-freeze-strict": "^1.1.2",
     "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
@@ -59,7 +58,6 @@
   "dependencies": {
     "compose-function": "^3.0.3",
     "core-js": "^3.35.1",
-    "deep-freeze-strict": "^1.1.1",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

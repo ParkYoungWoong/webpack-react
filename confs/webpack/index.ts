@@ -56,10 +56,6 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             loadStyles(conf, {
                 isDev,
                 styleType: 'scss',
-                styleResourcePatterns: [
-                    // use scss
-                    withBasePath('/src/assets/scss/_globals.scss'),
-                ],
             }),
 
         (conf: Config) =>
