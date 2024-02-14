@@ -24,6 +24,12 @@ const genAutoFunc = (suffix = 'scss') => {
     return cb;
 };
 
+const genCssModulesOption = (suffix = 'scss') => ({
+    auto: genAutoFunc(suffix),
+    localIdentName: '[local]__[hash:base64]',
+    exportLocalsConvention: 'camelCase',
+});
+
 /**
  * @description config style loads
  * @param confInstance
@@ -51,10 +57,7 @@ export const loadStyles = (
                 sourceMap,
                 importLoaders: 2,
                 // css-module hash
-                modules: {
-                    auto: genAutoFunc('sass'),
-                    localIdentName: '[local]__[hash:base64]',
-                },
+                modules: genCssModulesOption('sass'),
             })
             .end()
             .use('postcss')
@@ -129,10 +132,7 @@ export const loadStyles = (
                 sourceMap,
                 importLoaders: 2,
                 // css-module hash
-                modules: {
-                    auto: genAutoFunc('scss'),
-                    localIdentName: '[local]__[hash:base64]',
-                },
+                modules: genCssModulesOption(),
             })
             .end()
             .use('postcss')
@@ -197,10 +197,7 @@ export const loadStyles = (
                 sourceMap,
                 importLoaders: 2,
                 // css-module hash
-                modules: {
-                    auto: genAutoFunc('less'),
-                    localIdentName: '[local]__[hash:base64]',
-                },
+                modules: genCssModulesOption('less'),
             })
             .end()
             .use('postcss')
@@ -265,10 +262,7 @@ export const loadStyles = (
                 sourceMap,
                 importLoaders: 2,
                 // css-module hash
-                modules: {
-                    auto: genAutoFunc('styl'),
-                    localIdentName: '[local]__[hash:base64]',
-                },
+                modules: genCssModulesOption('styl'),
             })
             .end()
             .use('postcss')
@@ -332,10 +326,7 @@ export const loadStyles = (
             sourceMap,
             importLoaders: 1,
             // css-module hash
-            modules: {
-                auto: genAutoFunc('css'),
-                localIdentName: '[local]__[hash:base64]',
-            },
+            modules: genCssModulesOption('css'),
         })
         .end()
         .use('postcss')
