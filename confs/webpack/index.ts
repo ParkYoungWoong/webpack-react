@@ -5,6 +5,7 @@ import { loadStyles, loadJs } from './modules';
 
 // plugins
 import { DefinePlugin } from 'webpack';
+import DotenvPlugin from 'dotenv-webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -147,6 +148,13 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             .use(ForkTsCheckerWebpackPlugin, [
                 {
                     devServer: false,
+                },
+            ])
+            .end()
+            .plugin('DotenvPlugin')
+            .use(DotenvPlugin, [
+                {
+                    path: withBasePath('.env'),
                 },
             ])
             .end()
