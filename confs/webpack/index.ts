@@ -2,22 +2,20 @@ import { resolve as pathResolve } from 'path';
 import Config from 'webpack-chain';
 import compose from 'compose-function';
 import { loadStyles, loadJs } from './modules';
-
+import { takeDotEnv } from './plugins';
 // plugins
 import { DefinePlugin } from 'webpack';
-import DotenvPlugin from 'dotenv-webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-
 // types
 import type { MinifyOptions } from 'terser';
 
 /** @description Self-defined options. */
-type SelfDefineOptions = Partial<{
+export type SelfDefineOptions = Partial<{
     /** HTML Title */
     title: string;
     /** Language of the project */
@@ -26,6 +24,8 @@ type SelfDefineOptions = Partial<{
     isDev: boolean;
     /** for production conf */
     isProd: boolean;
+    /** for using dotenv plugin */
+    isDotEnvUsed: boolean;
 }>;
 
 /**
@@ -43,7 +43,13 @@ const { uglifyJsMinify } = TerserPlugin;
  * @returns basic webpack conf
  */
 export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
-    const { title = 'react-ts-webpack-starter', lang = 'en', isDev = true, isProd = false } = options || {};
+    const {
+        title = 'react-ts-webpack-starter',
+        lang = 'en',
+        isDev = true,
+        isProd = false,
+        isDotEnvUsed = false,
+    } = options || {};
 
     // configuration of loading js styles
     const configLoadingJsAndStyles = compose(
@@ -71,7 +77,13 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             })
     );
 
-    return configLoadingJsAndStyles(
+    // load conditional config and plugins
+    const loadConditionalConfig = compose(
+        (conf: Config) => takeDotEnv(conf, { isDotEnvUsed }),
+        (conf: Config) => configLoadingJsAndStyles(conf)
+    );
+
+    return loadConditionalConfig(
         new Config()
             // set context
             .context(withBasePath())
@@ -148,13 +160,6 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             .use(ForkTsCheckerWebpackPlugin, [
                 {
                     devServer: false,
-                },
-            ])
-            .end()
-            .plugin('DotenvPlugin')
-            .use(DotenvPlugin, [
-                {
-                    path: withBasePath('.env'),
                 },
             ])
             .end()
