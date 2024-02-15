@@ -1,5 +1,6 @@
 import { createBasicConfig } from './confs';
 import type { Configuration } from 'webpack';
+import type { SelfDefineOptions } from './confs';
 
 /**
  * @description Export a Config Function.
@@ -12,12 +13,15 @@ const webpackConfigCallback = (environments: Record<string, unknown>): Configura
     const { dev, prod } = environments;
     const { NODE_ENV = 'development' } = process.env;
 
-    return createBasicConfig({
+    // options for basicConfig
+    const basicConfigOptions: SelfDefineOptions = {
         title: 'react-ts-webpack-starter',
         lang: 'zh-CN',
         isDev: !!dev && NODE_ENV === 'development',
         isProd: !!prod && NODE_ENV === 'production',
-    }).toConfig();
+    };
+
+    return createBasicConfig(basicConfigOptions).toConfig();
 };
 
 export default webpackConfigCallback;
