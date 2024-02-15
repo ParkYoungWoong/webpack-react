@@ -151,7 +151,6 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                 minSize: 15000,
             })
             .end()
-            // check ts in dev environment
             .plugin('ForkTsCheckerWebpackPlugin')
             .use(ForkTsCheckerWebpackPlugin, [
                 {
@@ -248,7 +247,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                         },
                     ])
                     .end()
-                    // check ts in dev environment
+                    // check ts in prod environment
                     .plugin('ForkTsCheckerWebpackPlugin')
                     .tap(args => [
                         ...args,
