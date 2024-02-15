@@ -51,12 +51,9 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
         isDotEnvUsed = false,
     } = options || {};
 
-    // configuration of loading js styles
-    const configLoadingJsAndStyles = compose(
-        (conf: Config) =>
-            loadJs(conf, {
-                isProd,
-            }),
+    /** take conditional config and plugins */
+    const takeConditionalConfig: (conf: Config) => Config = compose<Config>(
+        (conf: Config) => takeDotEnv(conf, { isDotEnvUsed }),
 
         (conf: Config) =>
             loadStyles(conf, {
@@ -74,16 +71,15 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             loadStyles(conf, {
                 isDev,
                 styleType: 'css',
+            }),
+
+        (conf: Config) =>
+            loadJs(conf, {
+                isProd,
             })
     );
 
-    // load conditional config and plugins
-    const loadConditionalConfig = compose(
-        (conf: Config) => takeDotEnv(conf, { isDotEnvUsed }),
-        (conf: Config) => configLoadingJsAndStyles(conf)
-    );
-
-    return loadConditionalConfig(
+    return takeConditionalConfig(
         new Config()
             // set context
             .context(withBasePath())
