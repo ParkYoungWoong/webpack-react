@@ -1,4 +1,4 @@
-import { versions } from 'process';
+import { versions, release } from 'process';
 
 /** @description Check node.js version before running programme. */
 export const checkNodejsVersion = () => {
@@ -9,7 +9,8 @@ export const checkNodejsVersion = () => {
         throw new Error('The Nodejs version should be >= 14');
     }
 
-    if (greatestVersion % 2 === 1) {
+    const { lts } = release;
+    if (greatestVersion % 2 === 1 && !lts) {
         throw new Error('Must use LTS version!');
     }
 
