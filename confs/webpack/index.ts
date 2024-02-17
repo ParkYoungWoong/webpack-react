@@ -112,11 +112,8 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
             // add pics
             .test(/\.(png|svg|jpe?g|gif)$/i)
             .set('type', 'asset/resource')
-            .parser({
-                dataUrlCondition: {
-                    maxSize: 10 * 1024,
-                },
-            })
+            .set('generator', { filename: 'static/[hash][ext][query]' })
+            .parser({ dataUrlCondition: { maxSize: 10 * 1024 } })
             .end()
             .rule('fonts')
             .test(/\.(woff2?|eot|[ot]tf)$/i)
