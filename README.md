@@ -11,11 +11,13 @@ Please note:
 
 ```sh
 # Clone this template
-$ npx degit https://github.com/Allen-Bayern/webpack-react-new.git YOUR_PROJECT_DIRECTORY
+$ npx degit https://github.com/My-Project-Template/webpack-react-new.git YOUR_PROJECT_DIRECTORY
+
 # Using yarn
-$ yarn dlx degit https://github.com/Allen-Bayern/webpack-react-new.git YOUR_PROJECT_DIRECTORY
+$ yarn dlx degit https://github.com/My-Project-Template/webpack-react-new.git YOUR_PROJECT_DIRECTORY
+
 # Using pnpm
-$ pnpm dlx degit https://github.com/Allen-Bayern/webpack-react-new.git YOUR_PROJECT_DIRECTORY
+$ pnpm dlx degit https://github.com/My-Project-Template/webpack-react-new.git YOUR_PROJECT_DIRECTORY
 
 # Navigate to your project directory
 $ cd YOUR_PROJECT_DIRECTORY
