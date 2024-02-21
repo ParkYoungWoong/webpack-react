@@ -177,12 +177,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     .end()
                     // check ts in dev environment
                     .plugin('ForkTsCheckerWebpackPlugin')
-                    .tap(args => [
-                        ...args,
-                        {
-                            devServer: true,
-                        },
-                    ])
+                    .tap(([originConf]) => [{ ...originConf, devServer: true }])
                     .end();
             })
             // set in production mode
@@ -230,12 +225,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     // html webpack plugin
                     .end()
                     .plugin('HtmlWebpackPlugin')
-                    .tap(args => [
-                        ...args,
-                        {
-                            minify: true,
-                        },
-                    ])
+                    .tap(([originConf]) => [{ ...originConf, minify: true }])
                     .end()
                     .plugin('MiniCssExtractPlugin')
                     .use(MiniCssExtractPlugin, [
@@ -246,9 +236,9 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     .end()
                     // check ts in prod environment
                     .plugin('ForkTsCheckerWebpackPlugin')
-                    .tap(args => [
-                        ...args,
+                    .tap(([originConf]) => [
                         {
+                            ...originConf,
                             devServer: false,
                             typescript: {
                                 diagnosticOptions: {
