@@ -1,6 +1,9 @@
 import Config from 'webpack-chain';
 import { loader as miniLoader } from 'mini-css-extract-plugin';
 
+/** valid style types */
+type StyleType = ['css', 'sass', 'scss', 'less', 'styl', 'stylus'][number];
+
 /**
  * @description Generate a function used by 'auto'
  * @param suffix style suffix without dot
@@ -25,7 +28,7 @@ const genAutoFunc = (suffix = 'scss') => {
  */
 const genCssLoaderOption = (
     opts: Partial<{
-        styleType: string;
+        styleType: StyleType;
         isWithCssModule: boolean;
         sourceMap: boolean;
     }> = {}
@@ -60,9 +63,9 @@ const genCssLoaderOption = (
  * @description Generate some config of css preprocessors
  * @param styleType style type supported
  */
-const genStyleConfigWithPreloader = (styleType = 'scss') => {
+const genStyleConfigWithPreloader = (opts: { styleType: StyleType; sourceMap?: boolean }) => {
+    const { styleType = 'scss', sourceMap = false } = opts || {};
     const styleTypeList = ['sass', 'scss', 'less', 'styl', 'stylus'];
-    const sourceMap = false;
 
     if (styleTypeList.includes(styleType)) {
         // List basic keys
@@ -102,30 +105,27 @@ const genStyleConfigWithPreloader = (styleType = 'scss') => {
     return null;
 };
 
-/** the second parameter's type of `loadStyles` */
-type LoadStylesOtherConf = Partial<{
-    isDev: boolean;
-    styleType: ['css', 'sass', 'scss', 'less', 'styl', 'stylus'][number];
-    styleResourcePatterns: string[];
-    /** toggle source map option to users */
-    isCompiledWithSourceMap: (() => boolean) | boolean;
-}>;
-
 /**
  * @description config style loads
  * @param confInstance
  * @param  otherConf
  * @returns the config instance
  */
-export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
-    const { isDev = true, styleType = 'css', styleResourcePatterns = [], isCompiledWithSourceMap } = opts || {};
-    const sourceMap =
-        typeof isCompiledWithSourceMap === 'function' ? isCompiledWithSourceMap() : Boolean(isCompiledWithSourceMap);
-    const cssPreConfiguration = genStyleConfigWithPreloader(styleType);
-
+export const loadStyles = (
+    confInstance: Config,
+    opts: Partial<{
+        isDev: boolean;
+        styleType: StyleType;
+        styleResourcePatterns: string[];
+        /** toggle source map option to users */
+        isOpenSourceMap: (() => boolean) | boolean;
+    }> = {}
+) => {
+    const { isDev = true, styleType = 'css', styleResourcePatterns = [], isOpenSourceMap } = opts || {};
+    const sourceMap = typeof isOpenSourceMap === 'function' ? isOpenSourceMap() : Boolean(isOpenSourceMap);
     /** the basic parameter of thr function genCssLoaderOption */
     const basicOptGenCssLoaderOption = { styleType, sourceMap };
-
+    const cssPreConfiguration = genStyleConfigWithPreloader({ styleType, sourceMap });
     if (cssPreConfiguration) {
         const { regex, selfLoaderName, selfLoaderOptions } = cssPreConfiguration;
 
