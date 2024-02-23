@@ -21,15 +21,21 @@ const genAutoFunc = (suffix = 'scss') => {
 
 /**
  * @description generate options of css loaders
- * @param styleType style type supported
- * @param isWithCssModule is css-module config generated
+ * @param opts options
  */
-const genCssLoaderOption = (styleType = 'scss', isWithCssModule = true) => {
+const genCssLoaderOption = (
+    opts: Partial<{
+        styleType: string;
+        isWithCssModule: boolean;
+        sourceMap: boolean;
+    }> = {}
+) => {
+    const { styleType = 'scss', isWithCssModule = true, sourceMap = false } = opts || {};
     const importLoaders = Number(styleType !== 'css') + 1;
 
     // conf without modules
     const basicConf = {
-        sourceMap: false,
+        sourceMap,
         importLoaders,
         modules: false,
     };
@@ -117,6 +123,9 @@ export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
         typeof isCompiledWithSourceMap === 'function' ? isCompiledWithSourceMap() : Boolean(isCompiledWithSourceMap);
     const cssPreConfiguration = genStyleConfigWithPreloader(styleType);
 
+    /** the basic parameter of thr function genCssLoaderOption */
+    const basicOptGenCssLoaderOption = { styleType, sourceMap };
+
     if (cssPreConfiguration) {
         const { regex, selfLoaderName, selfLoaderOptions } = cssPreConfiguration;
 
@@ -130,7 +139,7 @@ export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
             .end()
             .use('css')
             .loader('css-loader')
-            .options(genCssLoaderOption(styleType))
+            .options(genCssLoaderOption(basicOptGenCssLoaderOption))
             .end()
             .use('postcss')
             .loader('postcss-loader')
@@ -153,7 +162,7 @@ export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
             .end()
             .use('css')
             .loader('css-loader')
-            .options(genCssLoaderOption(styleType, false))
+            .options(genCssLoaderOption({ isWithCssModule: false, ...basicOptGenCssLoaderOption }))
             .end()
             .use('postcss')
             .loader('postcss-loader')
@@ -185,7 +194,7 @@ export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
         .end()
         .use('css')
         .loader('css-loader')
-        .options(genCssLoaderOption(styleType))
+        .options(genCssLoaderOption(basicOptGenCssLoaderOption))
         .end()
         .use('postcss')
         .loader('postcss-loader')
@@ -204,7 +213,7 @@ export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
         .end()
         .use('css')
         .loader('css-loader')
-        .options(genCssLoaderOption(styleType, false))
+        .options(genCssLoaderOption({ isWithCssModule: false, ...basicOptGenCssLoaderOption }))
         .end()
         .use('postcss')
         .loader('postcss-loader')
