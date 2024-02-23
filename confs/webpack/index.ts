@@ -11,8 +11,19 @@ import TerserPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import { EsbuildPlugin } from 'esbuild-loader';
 // types
 import type { MinifyOptions } from 'terser';
+import type { LoaderOptions as EsbuildLoaderOpts } from 'esbuild-loader';
+
+/**
+ * @description Modify the relative path to the root path of the project using `path.resolve`
+ * @param suffix the relative path relative to the root path of the project
+ * @returns the real path
+ */
+const withBasePath = (suffix = '') => pathResolve(__dirname, `../../${suffix}`);
+
+const { uglifyJsMinify } = TerserPlugin;
 
 /** @description Self-defined options. */
 export type SelfDefineOptions = Partial<{
@@ -26,16 +37,13 @@ export type SelfDefineOptions = Partial<{
     isProd: boolean;
     /** for using dotenv plugin */
     isDotEnvUsed: boolean;
+    /** for css compile */
+    isCompiledWithSourceMap: (() => boolean) | boolean;
+    /** for esbuild when in dev environment */
+    isTakingEsbuildInDev: boolean;
+    /** for esbuild loader options */
+    esbuildLoaderOptions: EsbuildLoaderOpts;
 }>;
-
-/**
- * @description Modify the relative path to the root path of the project using `path.resolve`
- * @param suffix the relative path relative to the root path of the project
- * @returns the real path
- */
-const withBasePath = (suffix = '') => pathResolve(__dirname, `../../${suffix}`);
-
-const { uglifyJsMinify } = TerserPlugin;
 
 /**
  * Generate a basic config
@@ -49,7 +57,16 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
         isDev = true,
         isProd = false,
         isDotEnvUsed = false,
+        isCompiledWithSourceMap = false,
+        isTakingEsbuildInDev = true,
+        esbuildLoaderOptions = { target: 'es2020' },
     } = options || {};
+
+    // basic options for the second parameter of the function `loadStyles`
+    const loadStylesBasicOpts = {
+        isDev,
+        isCompiledWithSourceMap,
+    };
 
     /** take conditional config and plugins */
     const takeConditionalConfig: (conf: Config) => Config = compose<Config>(
@@ -57,25 +74,27 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
 
         (conf: Config) =>
             loadStyles(conf, {
-                isDev,
+                ...loadStylesBasicOpts,
                 styleType: 'sass',
             }),
 
         (conf: Config) =>
             loadStyles(conf, {
-                isDev,
+                ...loadStylesBasicOpts,
                 styleType: 'scss',
             }),
 
         (conf: Config) =>
             loadStyles(conf, {
-                isDev,
+                ...loadStylesBasicOpts,
                 styleType: 'css',
             }),
 
         (conf: Config) =>
             loadJs(conf, {
                 isProd,
+                isTakingEsbuildInDev,
+                esbuildLoaderOptions,
             })
     );
 
@@ -177,8 +196,21 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     .end()
                     // check ts in dev environment
                     .plugin('ForkTsCheckerWebpackPlugin')
-                    .tap(([originConf]) => [{ ...originConf, devServer: true }])
-                    .end();
+                    .tap(([originConf]) => [
+                        {
+                            ...originConf,
+                            devServer: true,
+                        },
+                    ])
+                    .end()
+                    // config esbuild
+                    .when(isTakingEsbuildInDev, conf => {
+                        conf.optimization.minimizer('EsbuildPlugin').use(EsbuildPlugin, [
+                            {
+                                target: esbuildLoaderOptions?.target || 'es2020',
+                            },
+                        ]);
+                    });
             })
             // set in production mode
             .when(isProd, configure => {
