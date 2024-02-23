@@ -159,7 +159,10 @@ export const loadJs = (confInstance: Config, opts: LoadJsOptions = {}): Config =
             .end()
             .use('ts-loader')
             .loader('ts-loader')
-            .options(tsLoaderBasicConf)
+            .options({
+                ...tsLoaderBasicConf,
+                happyPackMode: false,
+            })
             .end()
             .end();
 
