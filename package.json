@@ -29,6 +29,8 @@
     "css-loader": "^6.0.0",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "dotenv-webpack": "^8.0.1",
+    "esbuild": "^0.20.1",
+    "esbuild-loader": "^4.0.3",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.2.1",

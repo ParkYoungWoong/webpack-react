@@ -1,12 +1,15 @@
 import Config from 'webpack-chain';
+import type { LoaderOptions as EsbuildLoaderOpts } from 'esbuild-loader';
 
 type LoadJsOptions = Partial<{
     isProd: boolean;
+    isTakingEsbuildInDev: boolean;
+    esbuildLoaderOptions: EsbuildLoaderOpts;
 }>;
 
 /** @description add thread loader when isProd */
 export const loadJs = (confInstance: Config, opts: LoadJsOptions = {}) => {
-    const { isProd } = opts || {};
+    const { isProd, isTakingEsbuildInDev = true, esbuildLoaderOptions = {} } = opts || {};
 
     // basic config of ts-loader
     const tsLoaderBasicConf = {
@@ -33,6 +36,18 @@ export const loadJs = (confInstance: Config, opts: LoadJsOptions = {}) => {
                 ...tsLoaderBasicConf,
                 happyPackMode: true,
             })
+            .end()
+            .end()
+            .end();
+    }
+
+    if (isTakingEsbuildInDev) {
+        return confInstance.module
+            .rule('esbuild')
+            .test(/\.[jt]sx?$/i)
+            .use('esbuild-loader')
+            .loader('esbuild-loader')
+            .options({ target: 'es2020', ...esbuildLoaderOptions })
             .end()
             .end()
             .end();

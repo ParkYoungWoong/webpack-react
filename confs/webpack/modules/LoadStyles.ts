@@ -101,6 +101,8 @@ type LoadStylesOtherConf = Partial<{
     isDev: boolean;
     styleType: ['css', 'sass', 'scss', 'less', 'styl', 'stylus'][number];
     styleResourcePatterns: string[];
+    /** toggle source map option to users */
+    isCompiledWithSourceMap: (() => boolean) | boolean;
 }>;
 
 /**
@@ -109,15 +111,14 @@ type LoadStylesOtherConf = Partial<{
  * @param  otherConf
  * @returns the config instance
  */
-export const loadStyles = (
-    confInstance: Config,
-    { isDev = true, styleType = 'css', styleResourcePatterns = [] }: LoadStylesOtherConf
-) => {
-    const sourceMap = false;
+export const loadStyles = (confInstance: Config, opts: LoadStylesOtherConf) => {
+    const { isDev = true, styleType = 'css', styleResourcePatterns = [], isCompiledWithSourceMap } = opts || {};
+    const sourceMap =
+        typeof isCompiledWithSourceMap === 'function' ? isCompiledWithSourceMap() : Boolean(isCompiledWithSourceMap);
+    const cssPreConfiguration = genStyleConfigWithPreloader(styleType);
 
-    const cssPreConfs = genStyleConfigWithPreloader(styleType);
-    if (cssPreConfs) {
-        const { regex, selfLoaderName, selfLoaderOptions } = cssPreConfs;
+    if (cssPreConfiguration) {
+        const { regex, selfLoaderName, selfLoaderOptions } = cssPreConfiguration;
 
         return confInstance.module
             .rule(styleType)

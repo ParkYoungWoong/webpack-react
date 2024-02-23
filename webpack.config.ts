@@ -15,12 +15,16 @@ const webpackConfigCallback = (environments: Record<string, unknown>): Configura
     const { dev, prod } = environments;
     const { NODE_ENV = 'development' } = process.env;
 
+    const isDev = !!dev && NODE_ENV === 'development';
+    const isProd = !!prod && NODE_ENV === 'production';
+
     // options for basicConfig
     const basicConfigOptions: SelfDefineOptions = {
         title: 'react-ts-webpack-starter',
         lang: 'zh-CN',
-        isDev: !!dev && NODE_ENV === 'development',
-        isProd: !!prod && NODE_ENV === 'production',
+        isDev,
+        isProd,
+        isCompiledWithSourceMap: () => isProd,
     };
 
     return createBasicConfig(basicConfigOptions).toConfig();
