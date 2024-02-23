@@ -40,7 +40,7 @@ export type SelfDefineOptions = Partial<{
     /** for css compile */
     isCompiledWithSourceMap: (() => boolean) | boolean;
     /** for esbuild when in dev environment */
-    isTakingEsbuildInDev: boolean;
+    isEsbuildInDev: boolean;
     /** for esbuild loader options */
     esbuildLoaderOptions: EsbuildLoaderOpts;
 }>;
@@ -58,7 +58,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
         isProd = false,
         isDotEnvUsed = false,
         isCompiledWithSourceMap = false,
-        isTakingEsbuildInDev = true,
+        isEsbuildInDev = true,
         esbuildLoaderOptions = { target: 'es2020' },
     } = options || {};
 
@@ -93,7 +93,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
         (conf: Config) =>
             loadJs(conf, {
                 isProd,
-                isTakingEsbuildInDev,
+                isEsbuildInDev,
                 esbuildLoaderOptions,
             })
     );
@@ -204,7 +204,7 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                     ])
                     .end()
                     // config esbuild
-                    .when(isTakingEsbuildInDev, conf => {
+                    .when(isEsbuildInDev, conf => {
                         conf.optimization.minimizer('EsbuildPlugin').use(EsbuildPlugin, [
                             {
                                 target: esbuildLoaderOptions?.target || 'es2020',
