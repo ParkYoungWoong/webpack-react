@@ -14,7 +14,7 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import { EsbuildPlugin } from 'esbuild-loader';
 // types
 import type { MinifyOptions } from 'terser';
-import type { LoaderOptions as EsbuildLoaderOpts } from 'esbuild-loader';
+import type { LoaderOptions as esbuildLoaderOptions } from 'esbuild-loader';
 
 /**
  * @description Modify the relative path to the root path of the project using `path.resolve`
@@ -42,7 +42,11 @@ export type SelfDefineOptions = Partial<{
     /** for esbuild when in dev environment */
     isEsbuildInDev: boolean;
     /** for esbuild loader options */
-    esbuildLoaderOptions: EsbuildLoaderOpts;
+    esbuildLoaderOptions: esbuildLoaderOptions;
+    /** babel only compile, which is more important than `babelNotCompiles` */
+    babelOnlyCompiles: (string | RegExp)[];
+    /** babel not compile */
+    babelNotCompiles: (string | RegExp)[];
 }>;
 
 /**
@@ -60,6 +64,8 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
         isCompiledWithSourceMap = false,
         isEsbuildInDev = true,
         esbuildLoaderOptions = { target: 'es2020' },
+        babelOnlyCompiles = [],
+        babelNotCompiles = [/node_modules/],
     } = options || {};
 
     // basic options for the second parameter of the function `loadStyles`
@@ -95,6 +101,8 @@ export const createBasicConfig = (options: SelfDefineOptions = {}): Config => {
                 isProd,
                 isEsbuildInDev,
                 esbuildLoaderOptions,
+                onlyCompiles: babelOnlyCompiles,
+                notCompiles: babelNotCompiles,
             })
     );
 
